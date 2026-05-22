@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cosmic Playground ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060412;
+    --surface: #0d0820;
+    --card: #110e2a;
+    --border: rgba(255,255,255,0.07);
+    --gold: #f2c14e;
+    --gold-soft: rgba(242,193,78,0.15);
+    --rose: #f08fa0;
+    --teal: #5ecfca;
+    --lavender: #b8a9e8;
+    --white: #ede9f8;
+    --muted: rgba(237,233,248,0.55);
+    --fire: #ff7043;
+    --earth: #66bb6a;
+    --air: #4dd0e1;
+    --water: #7986cb;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* animated stars */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    animation: twinkle var(--d) ease-in-out infinite;
+    opacity: 0;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity:0; transform:scale(1); }
+    50% { opacity:var(--o); transform:scale(1.4); }
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* NAV TABS */
+  .tab-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6,4,18,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 4px;
+    padding: 12px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-nav::-webkit-scrollbar { display:none; }
+
+  .tab-btn {
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .tab-btn.active {
+    background: var(--gold-soft);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* SECTIONS */
+  .section { display: none; padding-top: 48px; }
+  .section.active { display: block; }
+
+  /* HEADER */
+  .hero {
+    text-align: center;
+    padding: 70px 0 50px;
+  }
+  .hero-icon {
+    font-size: 72px;
+    display: block;
+    animation: bob 5s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%,100%{transform:translateY(0) rotate(-3deg);}
+    50%{transform:translateY(-14px) rotate(3deg);}
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem,6vw,3.4rem);
+    color: var(--gold);
+    margin: 16px 0 8px;
+    text-shadow: 0 0 40px rgba(242,193,78,0.4);
+    line-height: 1.15;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 520px;
+    margin: 0 auto;
+    font-style: italic;
+  }
+
+  /* SECTION HEADING */
+  .sec-head {
+    margin-bottom: 32px;
+  }
+  .sec-head h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .sec-head p {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+
+  .rule {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 0 36px;
+    opacity: 0.3;
+  }
+
+  /* CARDS */
+  .grid { display: grid; gap: 14px; }
+  .grid-2 { grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::after {
+    content: attr(data-glyph);
+    position: absolute;
+    right: 14px; top: 12px;
+    font-size: 2rem;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(242,193,78,0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+
+  .card-accent {
+    width: 32px; height: 3px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+  }
+
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .card .label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .card .analogy {
+    font-style: italic;
+    color: var(--lavender);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    border-left: 2px solid rgba(184,169,232,0.3);
+    padding-left: 10px;
+  }
+
+  .card .desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 8px;
+  }
+  .tag-fire { background:rgba(255,112,67,0.18); color:var(--fire); border:1px solid rgba(255,112,67,0.3); }
+  .tag-earth { background:rgba(102,187,106,0.18); color:var(--earth); border:1px solid rgba(102,187,106,0.3); }
+  .tag-air { background:rgba(77,208,225,0.18); color:var(--air); border:1px solid rgba(77,208,225,0.3); }
+  .tag-water { background:rgba(121,134,203,0.18); color:var(--water); border:1px solid rgba(121,134,203,0.3); }
+  .tag-cardinal { background:rgba(240,143,160,0.15); color:var(--rose); border:1px solid rgba(240,143,160,0.3); }
+  .tag-fixed { background:rgba(242,193,78,0.15); color:var(--gold); border:1px solid rgba(242,193,78,0.3); }
+  .tag-mutable { background:rgba(94,207,202,0.15); color:var(--teal); border:1px solid rgba(94,207,202,0.3); }
+
+  /* INTRO CALLOUT */
+  .callout {
+    background: linear-gradient(135deg, rgba(242,193,78,0.08), rgba(17,14,42,0.9));
+    border: 1px solid rgba(242,193,78,0.25);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 36px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+  .callout strong { color: var(--gold); }
+  .callout em { color: var(--lavender); }
+
+  /* PLANET SPECIAL CARDS */
+  .planet-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    transition: transform 0.22s, border-color 0.22s;
+  }
+  .planet-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(242,193,78,0.3);
+  }
+  .planet-icon {
+    font-size: 2.2rem;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .planet-card h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
+  .planet-card .kid-role {
+    font-size: 0.78rem;
+    color: var(--teal);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .planet-card .analogy {
+    font-style: italic;
+    color: var(--lavender);
+    font-size: 0.88rem;
+    border-left: 2px solid rgba(184,169,232,0.3);
+    padding-left: 10px;
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  .planet-card .desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px 0 0;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.85rem;
+  }
+
+  /* CHART CALCULATOR */
+  .chart-form {
+    background: var(--card);
+    border: 1px solid rgba(242,193,78,0.2);
+    border-radius: 20px;
+    padding: 36px;
+    margin-bottom: 36px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .form-group input, .form-group select {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--gold);
+  }
+  .form-group input::placeholder { color: var(--muted); }
+  .form-group select option { background: #110e2a; color: var(--white); }
+  .form-note {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  .btn-cast {
+    width: 100%;
+    margin-top: 8px;
+    background: linear-gradient(135deg, rgba(242,193,78,0.2), rgba(242,193,78,0.08));
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    color: var(--gold);
+    cursor: pointer;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    padding: 14px 24px;
+    transition: all 0.25s;
+    letter-spacing: 0.02em;
+  }
+  .btn-cast:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(242,193,78,0.3), rgba(242,193,78,0.12));
+    box-shadow: 0 0 30px rgba(242,193,78,0.15);
+    transform: translateY(-2px);
+  }
+  .btn-cast:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* READING OUTPUT */
+  .reading-wrap { display: none; }
+  .reading-wrap.visible { display: block; }
+
+  .reading-header {
+    text-align: center;
+    padding: 40px 0 32px;
+  }
+  .reading-header .chart-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .reading-header .chart-sub {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  .reading-section {
+    margin-bottom: 28px;
+  }
+  .reading-section h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    font-size: 1.15rem;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .reading-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+  .reading-block .placement-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 6px;
+  }
+  .reading-block .placement-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--white);
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  .reading-block .placement-analogy {
+    font-style: italic;
+    color: var(--lavender);
+    border-left: 2px solid rgba(184,169,232,0.3);
+    padding-left: 10px;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+  }
+
+  .reading-summary {
+    background: linear-gradient(135deg, rgba(242,193,78,0.08), rgba(17,14,42,0.9));
+    border: 1px solid rgba(242,193,78,0.25);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-top: 32px;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--white);
+  }
+  .reading-summary h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    font-size: 1.3rem;
+    margin-bottom: 14px;
+  }
+
+  .loading-orb {
+    text-align: center;
+    padding: 60px 0;
+    display: none;
+  }
+  .loading-orb.visible { display: block; }
+  .orb {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    border-top-color: transparent;
+    margin: 0 auto 20px;
+    animation: spin 1.2s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-orb p {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+  .loading-orb .loading-phase {
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .error-msg {
+    background: rgba(255,112,67,0.1);
+    border: 1px solid rgba(255,112,67,0.3);
+    border-radius: 12px;
+    color: var(--fire);
+    display: none;
+    font-size: 0.9rem;
+    margin-top: 16px;
+    padding: 14px 18px;
+  }
+  .error-msg.visible { display: block; }
+
+  .btn-reset {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    margin-top: 32px;
+    padding: 9px 20px;
+    transition: all 0.2s;
+  }
+  .btn-reset:hover { border-color: var(--gold); color: var(--gold); }
+
+  @media(max-width:600px){
+    .form-row { grid-template-columns: 1fr; }
+    .chart-form { padding: 22px 18px; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- stars -->
+<div class="stars" id="stars"></div>
+
+<!-- NAV -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="show('home')">🏠 Home</button>
+  <button class="tab-btn" onclick="show('zodiac')">⭐ Zodiac Signs</button>
+  <button class="tab-btn" onclick="show('houses')">🏠 The Houses</button>
+  <button class="tab-btn" onclick="show('planets')">🪐 Planets</button>
+  <button class="tab-btn" onclick="show('asteroids')">🌸 Asteroids</button>
+  <button class="tab-btn" onclick="show('points')">🔭 Special Points</button>
+  <button class="tab-btn" onclick="show('aspects')">🔗 Aspects</button>
+  <button class="tab-btn" onclick="show('retrograde')">↩️ Retrogrades</button>
+  <button class="tab-btn" onclick="show('elements')">🔥 Elements & Modes</button>
+  <button class="tab-btn" onclick="show('patterns')">🌀 Chart Patterns</button>
+  <button class="tab-btn" onclick="show('yourchart')">🔮 Your Chart</button>
+</nav>
+
+<div class="wrap">
+
+  <!-- HOME -->
+  <div class="section active" id="home">
+    <div class="hero">
+      <span class="hero-icon">🛝</span>
+      <h1>The Cosmic Playground</h1>
+      <p>Everything in astrology explained as kids on a playground — simple, fun, and surprisingly accurate.</p>
+    </div>
+
+    <div class="callout">
+      <strong>The Big Idea:</strong> Imagine a giant magical playground. Every part of astrology is just a different <em>kid, role, or area of the playground.</em><br><br>
+      🧒 <strong>Zodiac Signs</strong> = The personality of each kid — who they ARE<br>
+      🏗️ <strong>Houses</strong> = The different areas of the playground — WHERE they play<br>
+      🌟 <strong>Planets</strong> = The main characters — the popular, loud, impossible-to-ignore kids<br>
+      🌸 <strong>Asteroids</strong> = The quieter, more complex supporting kids<br>
+      🗺️ <strong>Special Points</strong> = The invisible rules and forces that shape how the whole playground operates<br><br>
+      Use the tabs above to explore each section! ✨
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card" data-glyph="⭐">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>Zodiac Signs</h3>
+        <p class="desc">The 12 signs are like 12 totally different kids. Same playground, wildly different personalities — from the boldest show-off to the dreamiest wallflower.</p>
+      </div>
+      <div class="card" data-glyph="🏗️">
+        <div class="card-accent" style="background:var(--teal)"></div>
+        <h3>The 12 Houses</h3>
+        <p class="desc">The playground has 12 zones — the swings, the sandpit, the climbing frame. Each zone is a different area of your life.</p>
+      </div>
+      <div class="card" data-glyph="🌟">
+        <div class="card-accent" style="background:var(--rose)"></div>
+        <h3>Planets</h3>
+        <p class="desc">The main characters. The Sun is basically the main kid everyone orbits. The Moon is the sensitive best friend. Mars is the one starting every game — and every argument.</p>
+      </div>
+      <div class="card" data-glyph="🌸">
+        <div class="card-accent" style="background:var(--lavender)"></div>
+        <h3>Asteroids & Points</h3>
+        <p class="desc">The quieter, more layered kids. They don't dominate like the planets — but once you notice them, you can't unsee them.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZODIAC SIGNS -->
+  <div class="section" id="zodiac">
+    <div class="sec-head">
+      <h2>⭐ The 12 Zodiac Signs</h2>
+      <p>Each sign is a different kid — same playground, completely different vibe</p>
+    </div>
+    <div class="rule"></div>
+
+    <div class="callout">
+      If the <strong>elements</strong> are what a kid is made of (fire, earth, air, water) and the <strong>modalities</strong> are how they play (starter, sustainer, adapter) — then the <strong>zodiac sign</strong> is the <em>full person</em>. The combination of both. Two ingredients baked into one unique kid. 🧁
+    </div>
+
+    <div class="grid grid-2">
+
+      <div class="card" data-glyph="♈">
+        <div class="card-accent" style="background:var(--fire)"></div>
+        <h3>Aries ♈</h3>
+        <div class="label">Mar 21 – Apr 19</div>
+        <div class="analogy">"The kid who sprints onto the playground before the bell even stops ringing."</div>
+        <div class="desc">First in line. Always. Doesn't wait, doesn't plan, just GOES. Fearless and a little reckless — in the best way.</div>
+        <span class="tag tag-fire">🔥 Fire</span> <span class="tag tag-cardinal">Cardinal</span>
+      </div>
+
+      <div class="card" data-glyph="♉">
+        <div class="card-accent" style="background:var(--earth)"></div>
+        <h3>Taurus ♉</h3>
+        <div class="label">Apr 20 – May 20</div>
+        <div class="analogy">"The kid who found the best sunny spot on the bench and absolutely will not be moved."</div>
+        <div class="desc">Comfortable, patient, sensory. Brought snacks. Has the best snacks. Is not sharing the snacks unless they really like you.</div>
+        <span class="tag tag-earth">🌿 Earth</span> <span class="tag tag-fixed">Fixed</span>
+      </div>
+
+      <div class="card" data-glyph="♊">
+        <div class="card-accent" style="background:var(--air)"></div>
+        <h3>Gemini ♊</h3>
+        <div class="label">May 21 – Jun 20</div>
+        <div class="analogy">"The kid somehow playing tag AND doing hopscotch AND telling three different stories simultaneously."</div>
+        <div class="desc">Curious, quick, and impossible to pin down. Two different moods at once — both of them interesting.</div>
+        <span class="tag tag-air">💨 Air</span> <span class="tag tag-mutable">Mutable</span>
+      </div>
+
+      <div class="card" data-glyph="♋">
+        <div class="card-accent" style="background:var(--water)"></div>
+        <h3>Cancer ♋</h3>
+        <div class="label">Jun 21 – Jul 22</div>
+        <div class="analogy">"The kid who made sure everyone had a buddy before the game started — and cried a little when someone got left out."</div>
+        <div class="desc">Nurturing, protective, deeply feeling. The playground mom friend. Their shell is tough but inside? Pure softness.</div>
+        <span class="tag tag-water">💧 Water</span> <span class="tag tag-cardinal">Cardinal</span>
+      </div>
+
+      <div class="card" data-glyph="♌">
+        <div class="card-accent" style="background:var(--fire)"></div>
+        <h3>Leo ♌</h3>
+        <div class="label">Jul 23 – Aug 22</div>
+        <div class="analogy">"The kid doing a whole choreographed performance... that nobody asked for... that everyone is watching anyway."</div>
+        <div class="desc">Magnetic, generous, dramatic. Could make playing on a see-saw look like a Broadway show. And honestly? You'd applaud.</div>
+        <span class="tag tag-fire">🔥 Fire</span> <span class="tag tag-fixed">Fixed</span>
+      </div>
+
+      <div class="card" data-glyph="♍">
+        <div class="card-accent" style="background:var(--earth)"></div>
+        <h3>Virgo ♍</h3>
+        <div class="label">Aug 23 – Sep 22</div>
+        <div class="analogy">"The kid who rewrote the rules of tag to make them more fair, efficient, and better for everyone."</div>
+        <div class="desc">Analytical, helpful, quietly brilliant. Notices the thing nobody else noticed. Usually right. Occasionally insufferable about it.</div>
+        <span class="tag tag-earth">🌿 Earth</span> <span class="tag tag-mutable">Mutable</span>
+      </div>
+
+      <div class="card" data-glyph="♎">
+        <div class="card-accent" style="background:var(--air)"></div>
+        <h3>Libra ♎</h3>
+        <div class="label">Sep 23 – Oct 22</div>
+        <div class="analogy">"The kid who spent 25 minutes deciding which game to play and made it look beautiful somehow."</div>
+        <div class="desc">Charming, fair, indecisive. Wants everyone to be happy. Genuinely distressed when people argue. Dressed the best, obviously.</div>
+        <span class="tag tag-air">💨 Air</span> <span class="tag tag-cardinal">Cardinal</span>
+      </div>
+
+      <div class="card" data-glyph="♏">
+        <div class="card-accent" style="background:var(--water)"></div>
+        <h3>Scorpio ♏</h3>
+        <div class="label">Oct 23 – Nov 21</div>
+        <div class="analogy">"The kid sitting in the corner watching everyone... knowing everything... saying nothing."</div>
+        <div class="desc">Intense, magnetic, secretive. They already know who likes who and why. They won't tell you. They're waiting to see if you figure it out yourself.</div>
+        <span class="tag tag-water">💧 Water</span> <span class="tag tag-fixed">Fixed</span>
+      </div>
+
+      <div class="card" data-glyph="♐">
+        <div class="card-accent" style="background:var(--fire)"></div>
+        <h3>Sagittarius ♐</h3>
+        <div class="label">Nov 22 – Dec 21</div>
+        <div class="analogy">"The kid who climbed over the fence to see what's on the other side — and came back with stories."</div>
+        <div class="desc">Free, philosophical, blunt. Always chasing the horizon. Will tell you an uncomfortable truth and then laugh. Lovably untameable.</div>
+        <span class="tag tag-fire">🔥 Fire</span> <span class="tag tag-mutable">Mutable</span>
+      </div>
+
+      <div class="card" data-glyph="♑">
+        <div class="card-accent" style="background:var(--earth)"></div>
+        <h3>Capricorn ♑</h3>
+        <div class="label">Dec 22 – Jan 19</div>
+        <div class="analogy">"The kid who showed up to recess with a five-year plan and actually stuck to it."</div>
+        <div class="desc">Disciplined, dry, quietly hilarious. While other kids are playing, Capricorn is building something that lasts. Will outlast everyone. Patient as a mountain.</div>
+        <span class="tag tag-earth">🌿 Earth</span> <span class="tag tag-cardinal">Cardinal</span>
+      </div>
+
+      <div class="card" data-glyph="♒">
+        <div class="card-accent" style="background:var(--air)"></div>
+        <h3>Aquarius ♒</h3>
+        <div class="label">Jan 20 – Feb 18</div>
+        <div class="analogy">"The kid who invented an entirely new game that the rest of the school won't understand for another ten years."</div>
+        <div class="desc">Eccentric, humanitarian, a little detached. Cares deeply about everyone in theory. Sometimes forgets to care about the person right in front of them.</div>
+        <span class="tag tag-air">💨 Air</span> <span class="tag tag-fixed">Fixed</span>
+      </div>
+
+      <div class="card" data-glyph="♓">
+        <div class="card-accent" style="background:var(--water)"></div>
+        <h3>Pisces ♓</h3>
+        <div class="label">Feb 19 – Mar 20</div>
+        <div class="analogy">"The kid sitting by the puddle having a full conversation with a imaginary friend — and the imaginary friend is probably real."</div>
+        <div class="desc">Dreamy, empathetic, mystical. Feels everything from everyone. Has one foot in another dimension at all times. Somehow always knows things they shouldn't.</div>
+        <span class="tag tag-water">💧 Water</span> <span class="tag tag-mutable">Mutable</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HOUSES -->
+  <div class="section" id="houses">
+    <div class="sec-head">
+      <h2>🏗️ The 12 Houses</h2>
+      <p>The 12 zones of the playground — each one a different area of your life</p>
+    </div>
+    <div class="rule"></div>
+
+    <div class="callout">
+      If the zodiac signs are the <strong>kids</strong> and the planets are the <strong>main characters</strong> — then the houses are the <strong>different zones of the playground.</strong> The swings, the sandpit, the secret corner behind the bushes. Wherever a planet lands, <em>that's the zone of life it's playing in.</em>
+    </div>
+
+    <div class="grid grid-2">
+
+      <div class="card" data-glyph="🪞">
+        <div class="card-accent" style="background:var(--rose)"></div>
+        <h3>House 1 — The Mirror Zone</h3>
+        <div class="label">Self · Identity · First Impressions</div>
+        <div class="analogy">"The entrance gate — what everyone sees the second you walk onto the playground."</div>
+        <div class="desc">Your face, your vibe, how you carry yourself. The first impression before anyone even talks to you. Your whole "look."</div>
+      </div>
+
+      <div class="card" data-glyph="💰">
+        <div class="card-accent" style="background:var(--earth)"></div>
+        <h3>House 2 — The Snack Bag Zone</h3>
+        <div class="label">Money · Possessions · Values</div>
+        <div class="analogy">"The kid's backpack — what they own, what they brought, how generous they are with it."</div>
+        <div class="desc">What you have, what you value, how you earn and keep things. Your relationship with comfort and security.</div>
+      </div>
+
+      <div class="card" data-glyph="💬">
+        <div class="card-accent" style="background:var(--air)"></div>
+        <h3>House 3 — The Chatter Corner</h3>
+        <div class="label">Communication · Siblings · Short Trips</div>
+        <div class="analogy">"The gossip bench where all the talking, texting, and storytelling happens."</div>
+        <div class="desc">How you talk, think, write. Your siblings, your neighborhood, short journeys, your busy everyday mind.</div>
+      </div>
+
+      <div class="card" data-glyph="🏡">
+        <div class="card-accent" style="background:var(--water)"></div>
+        <h3>House 4 — The Hideout Zone</h3>
+        <div class="label">Home · Family · Roots</div>
+        <div class="analogy">"The secret fort behind the bushes — the place you go when you need to feel safe and be yourself."</div>
+        <div class="desc">Your family, childhood, roots, and the place that feels like home in your soul. The foundation under everything.</div>
+      </div>
+
+      <div class="card" data-glyph="🎨">
+        <div class="card-accent" style="background:var(--fire)"></div>
+        <h3>House 5 — The Show-Off Stage</h3>
+        <div class="label">Creativity · Romance · Joy · Play</div>
+        <div class="analogy">"The middle of the playground where kids do tricks, flirt, and basically perform for everyone watching."</div>
+        <div class="desc">Fun, art, romance, children, drama, creativity. The purest joy. Where your inner child lives.</div>
+      </div>
+
+      <div class="card" data-glyph="⚕️">
+        <div class="card-accent" style="background:var(--earth)"></div>
+        <h3>House 6 — The Chore Chart Zone</h3>
+        <div class="label">Health · Routine · Work · Habits</div>
+        <div class="analogy">"The part of the playground where the kid who actually tidies up after everyone else works quietly."</div>
+        <div class="desc">Daily routines, your physical body, health habits, pets, and the small repeated tasks that keep life running.</div>
+      </div>
+
+      <div class="card" data-glyph="🤝">
+        <div class="card-accent" style="background:var(--lavender)"></div>
+        <h3>House 7 — The Duo Zone</h3>
+        <div class="label">Partnerships · Marriage · One-on-One</div>
+        <div class="analogy">"The see-saw — you can't ride it alone. This zone only activates with another person."</div>
+        <div class="desc">Romantic partners, best friends, business partners. Who you attract. How you show up in one-on-one relationships.</div>
+      </div>
+
+      <div class="card" data-glyph="🔮">
+        <div class="card-accent" style="background:var(--water)"></div>
+        <h3>House 8 — The Forbidden Zone</h3>
+        <div class="label">Transformation · Shared Resources · Death & Rebirth</div>
+        <div class="analogy">"The part of the playground kids dare each other to go into — dark, mysterious, and oddly magnetic."</div>
+        <div class="desc">Deep transformation, shared money, sexuality, death, rebirth, secrets, and the things nobody talks about at lunch.</div>
+      </div>
+
+      <div class="card" data-glyph="🌍">
+        <div class="card-accent" style="background:var(--fire)"></div>
+        <h3>House 9 — The Fence Gate Zone</h3>
+        <div class="label">Philosophy · Travel · Higher Learning</div>
+        <div class="analogy">"The gate at the edge of the playground that leads to the wider world — the kid always peeking through it."</div>
+        <div class="desc">Long-distance travel, big ideas, religion, philosophy, university, and the search for meaning and truth.</div>
+      </div>
+
+      <div class="card" data-glyph="👑">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>House 10 — The Flagpole Zone</h3>
+        <div class="label">Career · Reputation · Public Life</div>
+        <div class="analogy">"The highest point of the playground — everyone can see who's up there. It's your legacy zone."</div>
+        <div class="desc">Career, ambition, public image, what you're known for. The mountaintop of the chart. What you build for the world to see.</div>
+      </div>
+
+      <div class="card" data-glyph="🌠">
+        <div class="card-accent" style="background:var(--air)"></div>
+        <h3>House 11 — The Squad Zone</h3>
+        <div class="label">Friendships · Community · Hopes & Dreams</div>
+        <div class="analogy">"The big group game zone — where everyone's welcome, teams form, and big dreams get shouted out loud."</div>
+        <div class="desc">Friend groups, communities, social causes, technology, and your highest hopes for the future.</div>
+      </div>
+
+      <div class="card" data-glyph="🌊">
+        <div class="card-accent" style="background:var(--water)"></div>
+        <h3>House 12 — The Shadow Zone</h3>
+        <div class="label">Subconscious · Hidden Things · Karma</div>
+        <div class="analogy">"The part of the playground nobody talks about — behind the equipment, in the quiet. Things happen there that nobody fully explains."</div>
+        <div class="desc">Dreams, the subconscious, hidden enemies, karma, spiritual retreat, and all the things working in the background of your life.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PLANETS -->
+  <div class="section" id="planets">
+    <div class="sec-head">
+      <h2>🪐 The Planets</h2>
+      <p>The main characters — each one a different kid with a very specific role on the playground</p>
+    </div>
+    <div class="rule"></div>
+
+    <div class="callout">
+      The planets are the <strong>most important kids on the playground</strong> — the ones everyone notices. Each one has a specific <em>job</em>, a specific <em>personality</em>, and they're always doing their thing in one of the 12 zones (houses). Wherever they are, <em>that's where the action is.</em>
+    </div>
+
+    <div class="grid grid-2">
+
+      <div class="planet-card">
+        <div class="planet-icon">☀️</div>
+        <div>
+          <h3>The Sun</h3>
+          <div class="kid-role">The Main Character</div>
+          <div class="analogy">"The kid everyone on the playground unconsciously faces toward — like a sunflower. The centre of the whole story."</div>
+          <div class="desc">Your core identity. Who you ARE at your deepest. Every other planet orbits this energy. The hero of your chart.</div>
+        </div>
+      </div>
+
+      <div class="planet-card">
+        <div class="planet-icon">🌙</div>
+        <div>
+          <h3>The Moon</h3>
+          <div class="kid-role">The Feelings Kid</div>
+          <div class="analogy">"The kid who feels everything — cries when the game ends, laughs the loudest, needs a hug after a hard day."</div>
+          <div class="desc">Your emotional world, instincts, and what makes you feel safe. Changes quickly — like the actual moon. Your inner private self.</div>
+        </div>
+      </div>
+
+      <div class="planet-card">
+        <div class="planet-icon">☿</div>
+        <div>
+          <h3>Mercury</h3>
+          <div class="kid-role">The Chatterbox</div>
+          <div class="analogy">"The kid running between every group, carrying messages, explaining rules, asking questions, making puns nobody asked for."</div>
+          <div class="desc">How you think, talk, learn, and process information. Your wit, your logic, your communication style.</div>
+        </div>
+      </div>
+
+      <div class="planet-card">
+        <div class="planet-icon">♀️</div>
+        <div>
+          <h3>Venus</h3>
+          <div class="kid-role">The Sweetheart</div>
+          <div class="analogy">"The kid who made the playground look pretty, brings people together, and everyone has a tiny crush on."</div>
+          <div class="desc">What you love, how you attract, what you find beautiful. Governs romance, art, money, pleasure, and your magnetic pull.</div>
+        </div>
+      </div>
+
+      <div class="planet-card">
+        <div class="planet-icon">♂️</div>
+        <div>
+          <h3>Mars</h3>
+          <div class="kid-role">The Fighter</div>
+          <div class="analogy">"The kid who started the game, argued about the rules, won, and is already challenging someone to a rematch."</div>
+          <div class="desc">Drive, ambition, anger, and desire. How you fight, compete, go after what you want, and channel raw energy.</div>
+        </div>
+      </div>
+
+      <div class="planet-card">
+        <div class="planet-icon">♃</div>
+        <div>
+          <h3>Jupiter</h3>
+          <div class="kid-role">The Lucky One</div>
+          <div class="analogy">"The kid who always finds money on the ground, gets picked first, and somehow wins every raffle."</div>
+          <div class="desc">Where luck, expansion, and abundance flow into your life. The biggest, most generous planet. Everything it touches, it grows.</div>
+        </div>
+      </div>
+
+      <div class="planet-card">
+        <div class="planet-icon">♄</div>
+        <div>
+          <h3>Saturn</h3>
+          <div class="kid-role">The Strict Teacher</div>
+          <div class="analogy">"The playground monitor who makes you do it again properly if you did it wrong — frustrating now, grateful later."</div>
+          <div class="desc">Discipline, lessons, karma, and structure. Where life makes you grow up whether you want to or not. Takes ~29 years to go around your chart once.</div>
+        </div>
+      </div>
+
+      <div class="planet-card">
+        <div class="planet-icon">♅</div>
+        <div>
+          <h3>Uranus</h3>
+          <div class="kid-role">The Rebel</div>
+          <div class="analogy">"The kid who showed up one day and broke every rule — and somehow made it cooler."</div>
+          <div class="desc">Revolution, sudden change, genius, and rebellion. Where you break free and do things completely differently. Shocks and awakens wherever it lands.</div>
+        </div>
+      </div>
+
+      <div class="planet-card">
+        <div class="planet-icon">♆</div>
+        <div>
+          <h3>Neptune</h3>
+          <div class="kid-role">The Dreamer</div>
+          <div class="analogy">"The kid who is technically on the playground but their mind is somewhere else entirely — possibly a fairy tale."</div>
+          <div class="desc">Dreams, illusions, spirituality, and confusion. Where you dissolve, transcend, or get completely lost in beautiful fog.</div>
+        </div>
+      </div>
+
+      <div class="planet-card">
+        <div class="planet-icon">♇</div>
+        <div>
+          <h3>Pluto</h3>
+          <div class="kid-role">The Transformer</div>
+          <div class="analogy">"The kid nobody sees much — but when they show up, everything changes. Permanently."</div>
+          <div class="desc">Death, rebirth, power, and obsession. Wherever Pluto is, something must die so something new can be born. The deepest, slowest, most intense force.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ASTEROIDS -->
+  <div class="section" id="asteroids">
+    <div class="sec-head">
+      <h2>🌸 Asteroids & Minor Bodies</h2>
+      <p>The quieter, more layered kids — supporting cast with surprising depth</p>
+    </div>
+    <div class="rule"></div>
+
+    <div class="callout">
+      Asteroids are like the <strong>quiet kids you underestimate</strong> — they're not as loud as the planets, but once you actually talk to them, you realize they have the most <em>interesting, specific, layered stories.</em> They add nuance the planets alone can't give you.
+    </div>
+
+    <div class="grid grid-2">
+
+      <div class="card" data-glyph="🖤">
+        <div class="card-accent" style="background:#8a2be2"></div>
+        <h3>Lilith (Black Moon)</h3>
+        <div class="label">The Wild One</div>
+        <div class="analogy">"The kid who got told to sit down and be quiet — and stood up anyway. Every time."</div>
+        <div class="desc">Your primal, untamed self. Where you refuse to shrink, where your shadow desires live, and where raw power that won't be domesticated hides. The part of you that won't apologize.</div>
+      </div>
+
+      <div class="card" data-glyph="🩹">
+        <div class="card-accent" style="background:var(--teal)"></div>
+        <h3>Chiron</h3>
+        <div class="label">The Wounded Healer</div>
+        <div class="analogy">"The kid who got hurt on the playground in a specific way — and became the one everyone comes to when they get hurt too."</div>
+        <div class="desc">Your deepest wound — the thing that never fully heals. But once you work with it, you become a powerful guide for others with the same wound. Pain turned into purpose.</div>
+      </div>
+
+      <div class="card" data-glyph="🌾">
+        <div class="card-accent" style="background:var(--earth)"></div>
+        <h3>Ceres</h3>
+        <div class="label">The Nurturer</div>
+        <div class="analogy">"The kid who brought extra sandwiches — not to be popular, but because they genuinely couldn't stand seeing someone go hungry."</div>
+        <div class="desc">How you nurture and need to be nurtured. Your relationship with food, nature, caretaking, and unconditional love. Also: grief when care is lost.</div>
+      </div>
+
+      <div class="card" data-glyph="🏹">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>Pallas (Athena)</h3>
+        <div class="label">The Strategist</div>
+        <div class="analogy">"The kid who figured out the optimal winning strategy for every game before anyone else had even read the rules."</div>
+        <div class="desc">Wisdom, strategy, and pattern recognition. How you solve problems and fight for justice. Your inner warrior-scholar who thinks before striking.</div>
+      </div>
+
+      <div class="card" data-glyph="💍">
+        <div class="card-accent" style="background:var(--rose)"></div>
+        <h3>Juno</h3>
+        <div class="label">The Committed One</div>
+        <div class="analogy">"The kid who, when they pick a best friend, picks them for life — and expects the same loyalty in return."</div>
+        <div class="desc">What you truly need in long-term commitment. Where you seek equality and devotion in partnership. Shows what a healthy soulmate bond looks like for you.</div>
+      </div>
+
+      <div class="card" data-glyph="🕯️">
+        <div class="card-accent" style="background:var(--fire)"></div>
+        <h3>Vesta</h3>
+        <div class="label">The Devoted One</div>
+        <div class="analogy">"The kid who was so focused on one particular game that they became the best in the school at it — and didn't even notice."</div>
+        <div class="desc">Sacred devotion and inner flame. What you dedicate yourself to most completely. The thing that burns inside you that no one and nothing can put out.</div>
+      </div>
+
+      <div class="card" data-glyph="🌀">
+        <div class="card-accent" style="background:var(--lavender)"></div>
+        <h3>Eris</h3>
+        <div class="label">The Truth-Teller</div>
+        <div class="analogy">"The kid who walked up to the popular group and said 'actually, this game is unfair' — and was right."</div>
+        <div class="desc">Discord, chaos, and radical truth. Where you expose hidden unfairness and refuse to pretend things are fine when they're not. A necessary disruptor.</div>
+      </div>
+
+      <div class="card" data-glyph="❄️">
+        <div class="card-accent" style="background:var(--air)"></div>
+        <h3>Sedna</h3>
+        <div class="label">The Isolated One</div>
+        <div class="analogy">"The kid sent to play alone by someone they trusted — who eventually built their own entire world out there."</div>
+        <div class="desc">Deep themes of betrayal, isolation, and surrender. The journey from victimhood to transcendence. The furthest, coldest, most soul-level asteroid in the chart.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SPECIAL POINTS -->
+  <div class="section" id="points">
+    <div class="sec-head">
+      <h2>🔭 Special Chart Points</h2>
+      <p>The invisible forces shaping how the whole playground operates</p>
+    </div>
+    <div class="rule"></div>
+
+    <div class="callout">
+      These aren't kids — they're the <strong>invisible rules and forces of the playground itself.</strong> You can't see them running around, but they shape everything. The invisible bell that ends the game. The unspoken hierarchy. The destiny that pulled a certain kid to a certain spot. <em>You feel them even when you can't name them.</em>
+    </div>
+
+    <div class="grid grid-2">
+
+      <div class="card" data-glyph="⬆️">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>Ascendant (Rising Sign)</h3>
+        <div class="label">The Entrance Gate</div>
+        <div class="analogy">"The outfit and energy you show up in. The thing everyone sees before they even know your name."</div>
+        <div class="desc">The sign rising on the horizon at your birth. Sets the entire chart. Your social mask, your vibe, how strangers read you before you speak. Often feels more "you" than your Sun sign.</div>
+      </div>
+
+      <div class="card" data-glyph="⬇️">
+        <div class="card-accent" style="background:var(--lavender)"></div>
+        <h3>Descendant</h3>
+        <div class="label">The Partner Zone</div>
+        <div class="analogy">"Directly opposite the entrance gate — the part of the playground you never go to alone. You need someone else to unlock it."</div>
+        <div class="desc">What you seek in others. The qualities in partners you don't fully see in yourself. Your shadow self reflected in relationship.</div>
+      </div>
+
+      <div class="card" data-glyph="🔝">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>Midheaven (MC)</h3>
+        <div class="label">The Flagpole</div>
+        <div class="analogy">"The highest point on the playground everyone can see. What you're climbing toward your whole life."</div>
+        <div class="desc">Your career, reputation, and public legacy. What you're here to achieve and be known for in the world's eyes. Your mountaintop destiny.</div>
+      </div>
+
+      <div class="card" data-glyph="🔻">
+        <div class="card-accent" style="background:var(--water)"></div>
+        <h3>IC (Imum Coeli)</h3>
+        <div class="label">The Root System</div>
+        <div class="analogy">"The underground root system beneath the playground — invisible, but everything alive grows from it."</div>
+        <div class="desc">Your private self, ancestry, childhood foundation, and what "home" means to your soul. The bottom of everything. The roots of the tree.</div>
+      </div>
+
+      <div class="card" data-glyph="☊">
+        <div class="card-accent" style="background:var(--teal)"></div>
+        <h3>North Node</h3>
+        <div class="label">The Destiny Gate</div>
+        <div class="analogy">"The part of the playground the kid is being nudged toward — unfamiliar, a little scary, but somehow calling to them."</div>
+        <div class="desc">Your soul's purpose this lifetime. The direction you're meant to grow toward. It feels uncomfortable because it's new — but it's where your evolution lives.</div>
+      </div>
+
+      <div class="card" data-glyph="☋">
+        <div class="card-accent" style="background:var(--rose)"></div>
+        <h3>South Node</h3>
+        <div class="label">The Comfort Zone</div>
+        <div class="analogy">"The game the kid already knows how to play perfectly — almost too perfectly. They could do it in their sleep. That's the problem."</div>
+        <div class="desc">Where your soul comes from — past life gifts and comfort zones. Natural talents that can become a crutch. You're meant to release this, not live in it.</div>
+      </div>
+
+      <div class="card" data-glyph="✨">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>Part of Fortune</h3>
+        <div class="label">The Lucky Spot</div>
+        <div class="analogy">"The specific corner of the playground where this kid always seems to find a four-leaf clover."</div>
+        <div class="desc">Where ease, joy, and natural abundance flow for you. Calculated from your Sun, Moon, and Rising. The sweet spot where effort feels effortless.</div>
+      </div>
+
+      <div class="card" data-glyph="🌀">
+        <div class="card-accent" style="background:var(--lavender)"></div>
+        <h3>Vertex</h3>
+        <div class="label">The Fate Door</div>
+        <div class="analogy">"The strange door in the fence that sometimes swings open and someone walks through it who changes everything — and you didn't plan for it at all."</div>
+        <div class="desc">Fated encounters and destiny-level meetings. When someone activates your Vertex, it feels like the universe orchestrated the whole thing. Because it did.</div>
+      </div>
+
+      <div class="card" data-glyph="⚖️">
+        <div class="card-accent" style="background:var(--air)"></div>
+        <h3>Lot of Spirit</h3>
+        <div class="label">The Inner Compass</div>
+        <div class="analogy">"The invisible compass every kid carries — it points toward what their soul is actually here to DO, not just feel."</div>
+        <div class="desc">Your soul's active mission and purpose. Complements the Part of Fortune. Where Fortune is where you receive — Spirit is where you give and create meaning.</div>
+      </div>
+
+      <div class="card" data-glyph="🌑">
+        <div class="card-accent" style="background:#3a1a5e"></div>
+        <h3>Black Moon Lilith (Point)</h3>
+        <div class="label">The Shadow Door</div>
+        <div class="analogy">"The part of the playground the kid pretends they never go to — but everyone knows they do. It's where their realest self lives."</div>
+        <div class="desc">The lunar apogee — the Moon's farthest point from Earth. Represents your deepest suppressed desires, untamed instincts, and where you've been shamed for being fully yourself.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ASPECTS -->
+  <div class="section" id="aspects">
+    <div class="sec-head">
+      <h2>🔗 Aspects</h2>
+      <p>The relationships between planets — how the kids interact with each other</p>
+    </div>
+    <div class="rule"></div>
+
+    <div class="callout">
+      Aspects are the <strong>conversations happening between planets.</strong> When two kids are close together, or perfectly across the playground from each other, or at a specific angle — they're in <em>relationship</em>. Some of those conversations are easy and fun. Some are tense arguments. Some are awkward silences. <em>All of them shape who you are.</em>
+    </div>
+
+    <div class="grid grid-2">
+
+      <div class="card" data-glyph="☌">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>Conjunction — 0°</h3>
+        <div class="label">The Merge · Most Powerful Aspect</div>
+        <div class="analogy">"Two kids glued at the hip. Inseparable. They've absorbed each other's energy so completely, it's hard to tell where one ends and the other begins."</div>
+        <div class="desc">Planets sitting at the same degree supercharge each other. This is fusion — intense, focused energy. Can be brilliant or overwhelming depending on which planets are involved.</div>
+      </div>
+
+      <div class="card" data-glyph="☍">
+        <div class="card-accent" style="background:var(--rose)"></div>
+        <h3>Opposition — 180°</h3>
+        <div class="label">The Face-Off · Tension Aspect</div>
+        <div class="analogy">"Two kids standing at opposite ends of the playground, staring each other down. They want completely different things — but they can't stop thinking about each other."</div>
+        <div class="desc">Pulls you in two directions at once. The challenge is integration — finding balance between two extremes. Often shows up as tension in relationships, since we project one side onto others.</div>
+      </div>
+
+      <div class="card" data-glyph="△">
+        <div class="card-accent" style="background:var(--teal)"></div>
+        <h3>Trine — 120°</h3>
+        <div class="label">The Flow · Harmony Aspect</div>
+        <div class="analogy">"Two kids who just GET each other. They're always in the same game, same team, same vibe — no effort required."</div>
+        <div class="desc">Natural talent, ease, and flow between two planets. They work together effortlessly. The catch? It's so easy it can go unnoticed — trines need intention to become greatness, not just comfort.</div>
+      </div>
+
+      <div class="card" data-glyph="□">
+        <div class="card-accent" style="background:var(--fire)"></div>
+        <h3>Square — 90°</h3>
+        <div class="label">The Friction · Growth Aspect</div>
+        <div class="analogy">"Two kids who rub each other the WRONG way — different games, different rules, constant low-level conflict. And yet somehow they push each other to be better."</div>
+        <div class="desc">The most challenging aspect — and the most motivating. Squares create friction that forces growth. Many of the most accomplished people have prominent squares. Difficulty as fuel.</div>
+      </div>
+
+      <div class="card" data-glyph="⚹">
+        <div class="card-accent" style="background:var(--lavender)"></div>
+        <h3>Sextile — 60°</h3>
+        <div class="label">The Opportunity · Soft Aspect</div>
+        <div class="analogy">"Two kids who get along well and could be great together — if they actually make the effort to hang out instead of just smiling at each other across the playground."</div>
+        <div class="desc">Gentle, supportive energy with real potential — but it requires conscious activation. Unlike trines, sextiles need you to do something with them. Low-key powerhouses when used.</div>
+      </div>
+
+      <div class="card" data-glyph="⊼">
+        <div class="card-accent" style="background:var(--water)"></div>
+        <h3>Quincunx (Inconjunct) — 150°</h3>
+        <div class="label">The Awkward One · Adjustment Aspect</div>
+        <div class="analogy">"Two kids from completely different friend groups who got accidentally paired together for a project. Totally different energy, no natural common ground — but somehow they make it work through sheer awkward effort."</div>
+        <div class="desc">The most misunderstood aspect. These planets don't speak the same language — different elements, different modes. Requires constant adjustment and flexibility. Often linked to health, work, and service.</div>
+      </div>
+
+      <div class="card" data-glyph="∗">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>Semi-Sextile — 30°</h3>
+        <div class="label">The Subtle Link · Minor Aspect</div>
+        <div class="analogy">"Two kids who sit near each other in class and have polite conversations — not best friends, but there's a quiet, useful connection."</div>
+        <div class="desc">A minor but real connection. Adjacent signs in the zodiac. Often shows a subtle irritant or a small resource — not dramatic, but worth noticing, especially when activated by transit.</div>
+      </div>
+
+      <div class="card" data-glyph="⊿">
+        <div class="card-accent" style="background:var(--teal)"></div>
+        <h3>Grand Trine</h3>
+        <div class="label">Three-Way Harmony · Rare Gift</div>
+        <div class="analogy">"Three kids who form the most naturally harmonious squad — same element, same vibe, total flow. The dream team. Almost too comfortable."</div>
+        <div class="desc">Three planets 120° apart forming a perfect triangle — all in the same element. Enormous natural talent in that element. The danger: it's so self-contained it can become a closed loop, resistant to outside input.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RETROGRADES -->
+  <div class="section" id="retrograde">
+    <div class="sec-head">
+      <h2>↩️ Retrogrades</h2>
+      <p>When planets appear to move backward — and what it really means</p>
+    </div>
+    <div class="rule"></div>
+
+    <div class="callout">
+      A retrograde isn't a planet actually moving backward — it's an <strong>optical illusion based on orbital speed.</strong> But the energy is real. Think of it like this: the kid isn't gone — they're walking back through the playground they already crossed, <em>reconsidering everything they thought they settled.</em> It's review, revision, and reflection energy. Not bad. Just... inward.
+    </div>
+
+    <div class="grid grid-2">
+
+      <div class="card" data-glyph="☿">
+        <div class="card-accent" style="background:var(--air)"></div>
+        <h3>Mercury Retrograde</h3>
+        <div class="label">3–4× per year · ~3 weeks each</div>
+        <div class="analogy">"The Chatterbox kid is now walking backwards through the playground, re-reading every note they passed, every conversation they had, every game rule they wrote down — and finding typos everywhere."</div>
+        <div class="desc">The most famous retrograde. Communication glitches, tech issues, travel delays, misunderstandings, and old conversations resurfacing. Best time for: re-reading, re-thinking, re-connecting. Worst time for: signing contracts, launching things, making assumptions.</div>
+      </div>
+
+      <div class="card" data-glyph="♀️">
+        <div class="card-accent" style="background:var(--rose)"></div>
+        <h3>Venus Retrograde</h3>
+        <div class="label">Every ~18 months · ~40 days</div>
+        <div class="analogy">"The Sweetheart kid has gone quiet — retreated to rethink every relationship, every value, every thing they thought they loved. Old crushes start reappearing at the gate."</div>
+        <div class="desc">Love, values, aesthetics, and money go under review. Exes resurface. You question what you truly value vs. what you've been told to value. Not ideal for: new relationships, big purchases, makeovers. Ideal for: healing old relationship wounds and clarifying what you actually want.</div>
+      </div>
+
+      <div class="card" data-glyph="♂️">
+        <div class="card-accent" style="background:var(--fire)"></div>
+        <h3>Mars Retrograde</h3>
+        <div class="label">Every ~2 years · ~2.5 months</div>
+        <div class="analogy">"The Fighter kid has gone strangely quiet — their drive engine stalled. They're reconsidering every battle they've picked, every goal they've been chasing. Is this really what I want to fight for?"</div>
+        <div class="desc">Motivation, drive, and anger go inward. Frustration without clear direction. Old conflicts can re-erupt. Best time to: reconsider your goals, redirect energy, address buried anger. Worst time to: start new projects that need momentum, make aggressive moves.</div>
+      </div>
+
+      <div class="card" data-glyph="♃">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>Jupiter Retrograde</h3>
+        <div class="label">Once per year · ~4 months</div>
+        <div class="analogy">"The Lucky Kid is sitting down for once — reflecting on what 'expansion' really means, instead of just growing for the sake of growing. Real wisdom is being gathered."</div>
+        <div class="desc">Growth turns inward. External luck may slow, but inner wisdom deepens. A time to consolidate beliefs rather than add more. Your own inner philosopher emerges. Often a deeply philosophical, clarifying period.</div>
+      </div>
+
+      <div class="card" data-glyph="♄">
+        <div class="card-accent" style="background:var(--earth)"></div>
+        <h3>Saturn Retrograde</h3>
+        <div class="label">Once per year · ~4.5 months</div>
+        <div class="analogy">"The Strict Teacher has gone back to re-grade old tests. Lessons you thought you'd passed? You're getting a second look. But also: the pressure lifts slightly — breathe."</div>
+        <div class="desc">Old lessons, karma, and responsibilities return for review. The external pressure of Saturn eases slightly, but internal discipline is called upon. Face what you've been avoiding. This is the universe giving you a retake.</div>
+      </div>
+
+      <div class="card" data-glyph="♅">
+        <div class="card-accent" style="background:var(--lavender)"></div>
+        <h3>Uranus Retrograde</h3>
+        <div class="label">Once per year · ~5 months</div>
+        <div class="analogy">"The Rebel kid has turned their rebellious energy inward — questioning their own system, dismantling their own beliefs. Revolutionary thought happening quietly, internally."</div>
+        <div class="desc">The revolution goes inward. Sudden changes slow externally, but radical personal reinvention accelerates. A time when inner breakthroughs are possible before they manifest outward. Your inner iconoclast is thinking.</div>
+      </div>
+
+      <div class="card" data-glyph="♆">
+        <div class="card-accent" style="background:var(--water)"></div>
+        <h3>Neptune Retrograde</h3>
+        <div class="label">Once per year · ~5 months</div>
+        <div class="analogy">"The Dreamer kid has accidentally wandered back through their own fog — and for once, they can see more clearly. The illusions are temporarily thinning."</div>
+        <div class="desc">Illusions dissolve. Clarity emerges about where you've been deceived — by others or yourself. Spiritual insights deepen. Addictions and escapist patterns are harder to maintain. A rare window of lucidity in Neptune's otherwise foggy domain.</div>
+      </div>
+
+      <div class="card" data-glyph="♇">
+        <div class="card-accent" style="background:#3a1a5e)"></div>
+        <h3>Pluto Retrograde</h3>
+        <div class="label">Once per year · ~5 months</div>
+        <div class="analogy">"The Transformer kid has turned their death-and-rebirth energy entirely inward. Something inside is being destroyed and rebuilt. Nobody can see it — but you can feel it."</div>
+        <div class="desc">The deepest retrograde. Power dynamics and transformation go underground. Old psychological patterns rise for excavation. Collective shadow work intensifies. Personally: whatever Pluto has been breaking down is now being rebuilt from the inside out.</div>
+      </div>
+
+    </div>
+
+    <div class="callout" style="margin-top:32px;">
+      <strong>Natal Retrograde Planets</strong> — born with a planet retrograde? That planet's energy is turned <em>inward</em> by default. It operates more privately, more internally, sometimes more slowly — but often more deeply. <strong>It's not a flaw.</strong> It's a different kind of power.
+    </div>
+  </div>
+
+  <!-- ELEMENTS & MODALITIES -->
+  <div class="section" id="elements">
+    <div class="sec-head">
+      <h2>🔥 Elements & Modalities</h2>
+      <p>The deeper categories that explain why signs with nothing in common still feel familiar</p>
+    </div>
+    <div class="rule"></div>
+
+    <div class="callout">
+      The 12 signs aren't random — they're organized into <strong>two secret filing systems.</strong> Elements explain <em>how a kid experiences the world.</em> Modalities explain <em>how they operate within it.</em> Together, they reveal why a Scorpio and a Pisces feel like cousins even though they're nothing alike on the surface.
+    </div>
+
+    <div class="sec-head" style="margin-top:40px; margin-bottom:16px;">
+      <h2 style="font-size:1.3rem;">🔥 The Four Elements</h2>
+      <p>How the signs experience reality</p>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom:48px;">
+
+      <div class="card" data-glyph="🔥">
+        <div class="card-accent" style="background:var(--fire)"></div>
+        <h3>Fire — Aries · Leo · Sagittarius</h3>
+        <div class="label">Inspiration · Action · Spirit</div>
+        <div class="analogy">"The kids who are always DOING something — always on, always lit up, always pulling everyone into the next adventure before the current one is even finished."</div>
+        <div class="desc">Instinct-driven, enthusiastic, and radiant. Fire signs act first and think later. They inspire and ignite everyone around them. At their best: courageous trailblazers. At their worst: impulsive and exhausting.</div>
+        <span class="tag tag-fire">Fire</span>
+      </div>
+
+      <div class="card" data-glyph="🌍">
+        <div class="card-accent" style="background:var(--earth)"></div>
+        <h3>Earth — Taurus · Virgo · Capricorn</h3>
+        <div class="label">Stability · Practicality · Embodiment</div>
+        <div class="analogy">"The kids who brought a real snack, planned the game properly, and will still be here cleaning up after everyone else has gone home."</div>
+        <div class="desc">Grounded, sensory, and reliable. Earth signs build real things in real life. They work with what exists. At their best: dependable, masterful, deeply sensual. At their worst: rigid, materialistic, resistant to change.</div>
+        <span class="tag tag-earth">Earth</span>
+      </div>
+
+      <div class="card" data-glyph="💨">
+        <div class="card-accent" style="background:var(--air)"></div>
+        <h3>Air — Gemini · Libra · Aquarius</h3>
+        <div class="label">Ideas · Communication · Connection</div>
+        <div class="analogy">"The kids who are everywhere and nowhere at once — talking, thinking, connecting dots, moving between groups, always three conversations deep."</div>
+        <div class="desc">Intellectual, social, and conceptual. Air signs live in the realm of ideas and relationships. They connect people and concepts. At their best: brilliant communicators and visionaries. At their worst: detached, scattered, and unreliable.</div>
+        <span class="tag tag-air">Air</span>
+      </div>
+
+      <div class="card" data-glyph="🌊">
+        <div class="card-accent" style="background:var(--water)"></div>
+        <h3>Water — Cancer · Scorpio · Pisces</h3>
+        <div class="label">Emotion · Intuition · Depth</div>
+        <div class="analogy">"The kids who feel everything, remember everything, and somehow always know what's really going on beneath the surface — even when nobody told them."</div>
+        <div class="desc">Intuitive, emotional, and deeply perceptive. Water signs navigate by feeling. They absorb the emotional atmosphere of any room. At their best: psychic empaths and healers. At their worst: overwhelmed, manipulative, or lost in feeling.</div>
+        <span class="tag tag-water">Water</span>
+      </div>
+
+    </div>
+
+    <div class="sec-head" style="margin-bottom:16px;">
+      <h2 style="font-size:1.3rem;">⚙️ The Three Modalities</h2>
+      <p>How the signs operate — their style of moving through the world</p>
+    </div>
+
+    <div class="grid grid-3">
+
+      <div class="card" data-glyph="🚀">
+        <div class="card-accent" style="background:var(--rose)"></div>
+        <h3>Cardinal — Aries · Cancer · Libra · Capricorn</h3>
+        <div class="label">Initiators · Starters · Season-Openers</div>
+        <div class="analogy">"The kid who shows up at the start of recess and says 'ok everyone, HERE'S what we're doing today.' Begins every season. Launches every game."</div>
+        <div class="desc">Cardinal signs start things. They're natural initiators and leaders. They open each season of the year. The challenge: they can struggle to finish what they begin — once it's moving, they're already thinking about the next thing.</div>
+        <span class="tag tag-cardinal">Cardinal</span>
+      </div>
+
+      <div class="card" data-glyph="🏔️">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>Fixed — Taurus · Leo · Scorpio · Aquarius</h3>
+        <div class="label">Sustainers · Builders · Mid-Season</div>
+        <div class="analogy">"The kid who decides what game is being played — and will still be playing it at the end of recess, end of the week, end of the year. Immovable once committed."</div>
+        <div class="desc">Fixed signs sustain things. They have incredible endurance, loyalty, and follow-through. They sit at the peak of each season. The challenge: stubbornness — they can hold on long after something should change.</div>
+        <span class="tag tag-fixed">Fixed</span>
+      </div>
+
+      <div class="card" data-glyph="🍃">
+        <div class="card-accent" style="background:var(--teal)"></div>
+        <h3>Mutable — Gemini · Virgo · Sagittarius · Pisces</h3>
+        <div class="label">Adapters · Finishers · Season-Closers</div>
+        <div class="analogy">"The kid who adapts to whatever game is happening, wraps things up, and is already transitioning to the next thing before the bell even rings. The great shapeshifters."</div>
+        <div class="desc">Mutable signs adapt and transition. They close each season and prepare for the next. Flexible, versatile, and able to go with the flow. The challenge: inconsistency — their adaptability can make them hard to pin down.</div>
+        <span class="tag tag-mutable">Mutable</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CHART PATTERNS -->
+  <div class="section" id="patterns">
+    <div class="sec-head">
+      <h2>🌀 Chart Patterns</h2>
+      <p>When planets form shapes — the group dynamics of the playground</p>
+    </div>
+    <div class="rule"></div>
+
+    <div class="callout">
+      Sometimes the planets in a chart don't just talk in pairs — they form <strong>whole group formations.</strong> These patterns are like the social dynamics of the playground at a macro level. A clique. A standoff. A lone wolf. A perfectly balanced team. <em>The shape of the pattern reveals the shape of a life.</em>
+    </div>
+
+    <div class="grid grid-2">
+
+      <div class="card" data-glyph="⭐">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>Stellium</h3>
+        <div class="label">3+ planets in one sign or house</div>
+        <div class="analogy">"One corner of the playground is absolutely PACKED — three, four, five kids all crammed into the same spot, all doing their thing at once. It's chaotic, intense, magnetic, and impossible to ignore."</div>
+        <div class="desc">Massive concentration of energy in one area of life or one sign's expression. Whatever that house or sign represents is the dominant theme of the chart — almost obsessively so. Incredible focus and depth, but potentially unbalanced.</div>
+      </div>
+
+      <div class="card" data-glyph="△">
+        <div class="card-accent" style="background:var(--teal)"></div>
+        <h3>Grand Trine</h3>
+        <div class="label">Three planets at 120° — same element</div>
+        <div class="analogy">"Three kids from the same friend group who are always in perfect harmony — a self-contained, frictionless trio. They're the dream team. The risk? They never need anyone else."</div>
+        <div class="desc">Three planets forming an equilateral triangle, all in the same element. Natural, flowing talent in that element — fire, earth, air, or water. The gift is enormous. The shadow: it's so self-sufficient it can become complacent, closed off from growth through friction.</div>
+      </div>
+
+      <div class="card" data-glyph="⊤">
+        <div class="card-accent" style="background:var(--fire)"></div>
+        <h3>T-Square</h3>
+        <div class="label">Two oppositions + one square apex</div>
+        <div class="analogy">"Two kids in a standoff at opposite ends — and a third kid standing at the side, getting dragged into every argument as the unwilling referee. Maximum tension, maximum growth."</div>
+        <div class="desc">One of the most common and powerful patterns. Two planets in opposition, both squaring a third (the apex). The apex planet is the pressure point — where all the tension lands, and where the greatest drive for achievement lives. Difficult but highly motivating.</div>
+      </div>
+
+      <div class="card" data-glyph="✦">
+        <div class="card-accent" style="background:var(--lavender)"></div>
+        <h3>Grand Cross</h3>
+        <div class="label">Four planets at 90° — all modes</div>
+        <div class="analogy">"Four kids at four corners of the playground, all in a face-off with the kid opposite AND in constant friction with the kids beside them. Every direction is tension. And somehow, this becomes the most resilient person on the playground."</div>
+        <div class="desc">Four planets forming a square with two oppositions cutting through it. Enormous tension in all directions. Often present in the charts of people who achieve remarkable things through sheer persistence. The pressure doesn't stop — and neither do they.</div>
+      </div>
+
+      <div class="card" data-glyph="⚹">
+        <div class="card-accent" style="background:var(--gold)"></div>
+        <h3>Grand Sextile (Star of David)</h3>
+        <div class="label">Six planets at 60° — two interlocking triangles</div>
+        <div class="analogy">"Six kids perfectly spaced around the playground in a star formation, each one offering support and opportunity to the next. The rarest, most balanced, most gifted formation — and the hardest to actually activate."</div>
+        <div class="desc">Extremely rare. Six planets evenly spaced creating a Star of David shape. Enormous potential and harmony — but because everything is so balanced, there's little internal friction to force action. Must be consciously activated or the gifts remain dormant.</div>
+      </div>
+
+      <div class="card" data-glyph="🏹">
+        <div class="card-accent" style="background:var(--rose)"></div>
+        <h3>Yod (Finger of God)</h3>
+        <div class="label">Two quincunxes + one sextile</div>
+        <div class="analogy">"Two kids at the back of the playground have quietly agreed on something — and they're both pointing at one specific kid who has no idea why they keep getting chosen for impossible missions."</div>
+        <div class="desc">Two planets in sextile both quincunx a third (the apex). The apex planet feels fated, pressured, and often doesn't understand why life keeps pointing it in one very specific direction. Associated with special destiny, karmic purpose, and missions that feel bigger than the self.</div>
+      </div>
+
+      <div class="card" data-glyph="🌗">
+        <div class="card-accent" style="background:var(--water)"></div>
+        <h3>Bucket / Splay</h3>
+        <div class="label">All planets on one side + one lone handle</div>
+        <div class="analogy">"All the kids are bunched up in one end of the playground — and one lone kid is standing alone at the other end, feeling both left out and strangely powerful. Everyone's pulled toward that lone kid."</div>
+        <div class="desc">Most planets in one hemisphere with one planet isolated — the "handle." That lone planet carries enormous weight and focus. It's the chart's lightning rod. The person often feels driven by the energy of that isolated planet above everything else.</div>
+      </div>
+
+      <div class="card" data-glyph="🌑">
+        <div class="card-accent" style="background:#1a1a3e"></div>
+        <h3>Bundle</h3>
+        <div class="label">All planets within 120° — tight cluster</div>
+        <div class="analogy">"All the kids are crammed into one third of the playground, completely ignoring two-thirds of the space. Incredibly focused, slightly oblivious to everything outside their corner."</div>
+        <div class="desc">All planets within a 120° arc. Laser-focused energy and identity. These people are often specialists — deeply concentrated in one area of life. The strength is intensity and expertise; the challenge is blind spots in the unoccupied areas of the chart.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- YOUR CHART -->
+  <div class="section" id="yourchart">
+    <div class="sec-head">
+      <h2>🔮 Your Natal Chart Reading</h2>
+      <p>Enter your birth details and receive a full Cosmic Playground reading — just for you</p>
+    </div>
+    <div class="rule"></div>
+
+    <!-- INPUT FORM -->
+    <div class="chart-form" id="chartForm">
+      <div class="callout" style="margin-bottom:28px;">
+        Your birth chart is a snapshot of the sky at the exact moment you arrived on the playground. Enter your details below and the cosmos will reveal which kids showed up, where they were playing, and what it all means — in pure Playground style. ✨
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <input type="date" id="birthDate" />
+        </div>
+        <div class="form-group">
+          <label>Time of Birth</label>
+          <input type="time" id="birthTime" />
+          <span class="form-note">Optional — needed for Rising sign & houses</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group full">
+          <label>Place of Birth</label>
+          <input type="text" id="birthPlace" placeholder="e.g. Chicago, Illinois, USA" />
+          <span class="form-note">City and country is enough</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group full">
+          <label>Your Name (optional)</label>
+          <input type="text" id="birthName" placeholder="What should we call you?" />
+        </div>
+      </div>
+
+      <button class="btn-cast" id="castBtn" onclick="castChart()">
+        ✦ Cast My Chart ✦
+      </button>
+      <div class="error-msg" id="errorMsg"></div>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div class="loading-orb" id="loadingOrb">
+      <div class="orb"></div>
+      <div class="loading-phase" id="loadingPhase">Reading the stars...</div>
+      <p id="loadingDetail">The cosmos is calculating your playground placement</p>
+    </div>
+
+    <!-- READING OUTPUT -->
+    <div class="reading-wrap" id="readingWrap">
+      <div class="reading-header">
+        <div class="chart-name" id="readingName"></div>
+        <div class="chart-sub" id="readingSubtitle"></div>
+      </div>
+      <div id="readingContent"></div>
+      <button class="btn-reset" onclick="resetChart()">↩ Cast a new chart</button>
+    </div>
+  </div>
+
+  <footer>✦ The stars don't define you — they describe you ✦</footer>
+
+</div><!-- end wrap -->
+
+<script>
+  // Generate stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      --d:${2 + Math.random()*5}s;
+      --o:${0.4 + Math.random()*0.6};
+      animation-delay:${Math.random()*6}s;
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // Tab switching
+  function show(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── CHART CALCULATOR ──────────────────────────────────────
+
+  const loadingPhases = [
+    ["Scanning the sky...", "Finding where the planets were playing the day you arrived"],
+    ["Placing the kids...", "Figuring out which zones they landed in"],
+    ["Reading the dynamics...", "Spotting who's friends, who's arguing, who's hiding"],
+    ["Writing your story...", "Translating it all into Playground language just for you"],
+  ];
+
+  function resetChart() {
+    document.getElementById('readingWrap').classList.remove('visible');
+    document.getElementById('chartForm').style.display = 'block';
+    document.getElementById('castBtn').disabled = false;
+    document.getElementById('errorMsg').classList.remove('visible');
+    document.getElementById('readingContent').innerHTML = '';
+  }
+
+  async function castChart() {
+    const date = document.getElementById('birthDate').value;
+    const time = document.getElementById('birthTime').value;
+    const place = document.getElementById('birthPlace').value.trim();
+    const name = document.getElementById('birthName').value.trim();
+
+    if (!date || !place) {
+      const err = document.getElementById('errorMsg');
+      err.textContent = 'Please enter at least your date of birth and place of birth.';
+      err.classList.add('visible');
+      return;
+    }
+
+    document.getElementById('errorMsg').classList.remove('visible');
+    document.getElementById('castBtn').disabled = true;
+    document.getElementById('chartForm').style.display = 'none';
+    document.getElementById('loadingOrb').classList.add('visible');
+
+    // Cycle through loading messages
+    let phaseIdx = 0;
+    const phaseEl = document.getElementById('loadingPhase');
+    const detailEl = document.getElementById('loadingDetail');
+    phaseEl.textContent = loadingPhases[0][0];
+    detailEl.textContent = loadingPhases[0][1];
+    const phaseTimer = setInterval(() => {
+      phaseIdx = (phaseIdx + 1) % loadingPhases.length;
+      phaseEl.textContent = loadingPhases[phaseIdx][0];
+      detailEl.textContent = loadingPhases[phaseIdx][1];
+    }, 3500);
+
+    const displayName = name || 'Your';
+    const timeNote = time ? `at ${time}` : '(birth time not provided — Rising sign and houses will be approximate)';
+
+    const prompt = `You are the voice of The Cosmic Playground — an astrology reading app where every astrological concept is explained using the metaphor of kids on a magical playground. Your tone is warm, poetic, occasionally witty, deeply insightful, and always grounded in the playground metaphor.
+
+A user has requested their natal chart reading. Their details:
+- Name: ${name || 'not provided'}
+- Date of birth: ${date}
+- Time of birth: ${timeNote}
+- Place of birth: ${place}
+
+Using your knowledge of astrology and astronomy, calculate or closely estimate the following placements for this birth data. Be as accurate as possible using your training knowledge of planetary positions.
+
+Then write a full natal chart reading in The Cosmic Playground style. Structure your response as JSON with this exact shape:
+
+{
+  "subtitle": "A one-line poetic description of this chart overall (e.g. 'Born when the sun ruled the spotlight and the moon hid in the deep end')",
+  "placements": [
+    {
+      "planet": "Sun",
+      "sign": "...",
+      "house": "...",
+      "label": "short evocative label like 'The Main Character in the Drama Zone'",
+      "analogy": "A playground-style analogy sentence specific to THIS placement combo",
+      "reading": "2-3 sentences of rich, personal interpretation in Playground voice"
+    }
+  ],
+  "bigThree": {
+    "sun": "Sign",
+    "moon": "Sign",
+    "rising": "Sign or 'Approximate' if no birth time"
+  },
+  "dominantElement": "Fire/Earth/Air/Water",
+  "dominantMode": "Cardinal/Fixed/Mutable",
+  "keyThemes": ["theme1", "theme2", "theme3"],
+  "summary": "A 4-6 sentence overall narrative summary of this chart in Playground voice — weaving together the dominant themes, the Big Three, and the most striking placements into a cohesive picture of who this person is on the cosmic playground."
+}
+
+Include placements for: Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, and if birth time is known, the Rising sign and North Node.
+
+Every analogy must feel specific and personal — not generic. Use the playground metaphor consistently. The reading should feel like it was written by someone who truly sees this person.
+
+Respond with ONLY the raw JSON. No markdown, no explanation, no backticks.`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 6000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      clearInterval(phaseTimer);
+      document.getElementById('loadingOrb').classList.remove('visible');
+
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+      const responseText = await response.text();
+      console.log('Raw response text (first 500):', responseText.slice(0, 500));
+
+      if (!response.ok) throw new Error('API error ' + response.status + ': ' + responseText.slice(0, 200));
+
+      let data;
+      try { data = JSON.parse(responseText); }
+      catch(e) { throw new Error('Response not JSON: ' + responseText.slice(0, 200)); }
+      console.log('Full response:', JSON.stringify(data).slice(0, 500));
+
+      // Handle multiple possible response shapes
+      let raw = '';
+      if (data.content && Array.isArray(data.content)) {
+        raw = data.content.map(b => b.text || b.content || '').join('');
+      } else if (data.content && typeof data.content === 'string') {
+        raw = data.content;
+      } else if (data.completion) {
+        raw = data.completion;
+      } else if (typeof data === 'string') {
+        raw = data;
+      }
+
+      console.log('Extracted text (first 300):', raw.slice(0, 300));
+      if (!raw) throw new Error('Empty response: ' + JSON.stringify(data).slice(0, 200));
+
+      // Extract JSON — find outermost { }
+      const firstBrace = raw.indexOf('{');
+      const lastBrace = raw.lastIndexOf('}');
+      if (firstBrace === -1 || lastBrace === -1) throw new Error('No JSON found. Got: ' + raw.slice(0, 100));
+      const clean = raw.slice(firstBrace, lastBrace + 1);
+      const chart = JSON.parse(clean);
+
+      renderReading(chart, displayName, date, place, time);
+
+    } catch (err) {
+      clearInterval(phaseTimer);
+      document.getElementById('loadingOrb').classList.remove('visible');
+      document.getElementById('chartForm').style.display = 'block';
+      document.getElementById('castBtn').disabled = false;
+      const errEl = document.getElementById('errorMsg');
+      errEl.textContent = 'Something went wrong reading the stars: ' + err.message;
+      errEl.classList.add('visible');
+      console.error('Full error:', err);
+    }
+  }
+
+  function renderReading(chart, name, date, place, time) {
+    const dateFormatted = new Date(date + 'T12:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    // Header
+    document.getElementById('readingName').textContent = name === 'Your' ? 'Your Cosmic Playground' : `${name}'s Cosmic Playground`;
+    document.getElementById('readingSubtitle').textContent = chart.subtitle;
+
+    const el = document.getElementById('readingContent');
+    el.innerHTML = '';
+
+    // Big Three banner
+    const bigThree = document.createElement('div');
+    bigThree.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;';
+    bigThree.innerHTML = `
+      <div class="card" style="text-align:center;padding:18px 12px;">
+        <div style="font-size:1.6rem;margin-bottom:6px;">☀️</div>
+        <div class="label" style="margin-bottom:4px;">Sun Sign</div>
+        <div style="font-family:'Playfair Display',serif;color:var(--gold);font-size:1.1rem;">${chart.bigThree.sun}</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Core identity</div>
+      </div>
+      <div class="card" style="text-align:center;padding:18px 12px;">
+        <div style="font-size:1.6rem;margin-bottom:6px;">🌙</div>
+        <div class="label" style="margin-bottom:4px;">Moon Sign</div>
+        <div style="font-family:'Playfair Display',serif;color:var(--lavender);font-size:1.1rem;">${chart.bigThree.moon}</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Inner world</div>
+      </div>
+      <div class="card" style="text-align:center;padding:18px 12px;">
+        <div style="font-size:1.6rem;margin-bottom:6px;">⬆️</div>
+        <div class="label" style="margin-bottom:4px;">Rising Sign</div>
+        <div style="font-family:'Playfair Display',serif;color:var(--teal);font-size:1.1rem;">${chart.bigThree.rising}</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">First impression</div>
+      </div>
+    `;
+    el.appendChild(bigThree);
+
+    // Key themes + dominants
+    const meta = document.createElement('div');
+    meta.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;align-items:center;';
+    meta.innerHTML = `
+      <span style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-right:4px;">Your chart:</span>
+      <span class="tag tag-${chart.dominantElement.toLowerCase()}">${chart.dominantElement} dominant</span>
+      <span class="tag tag-${chart.dominantMode.toLowerCase()}">${chart.dominantMode} mode</span>
+      ${chart.keyThemes.map(t => `<span style="display:inline-block;font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:2px 10px;border-radius:20px;background:rgba(184,169,232,0.12);color:var(--lavender);border:1px solid rgba(184,169,232,0.25);">${t}</span>`).join('')}
+    `;
+    el.appendChild(meta);
+
+    // Planet placements
+    const placementsHead = document.createElement('div');
+    placementsHead.className = 'reading-section';
+    placementsHead.innerHTML = '<h3>🪐 Your Planetary Placements</h3>';
+    el.appendChild(placementsHead);
+
+    const planetIcons = { Sun:'☀️', Moon:'🌙', Mercury:'☿', Venus:'♀️', Mars:'♂️', Jupiter:'♃', Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇', Rising:'⬆️', 'North Node':'☊' };
+
+    chart.placements.forEach(p => {
+      const block = document.createElement('div');
+      block.className = 'reading-block';
+      block.innerHTML = `
+        <div class="placement-label">${planetIcons[p.planet] || '✦'} ${p.planet} in ${p.sign}${p.house ? ' · House ' + p.house : ''}</div>
+        <div class="placement-title">${p.label}</div>
+        <div class="placement-analogy">"${p.analogy}"</div>
+        <div>${p.reading}</div>
+      `;
+      el.appendChild(block);
+    });
+
+    // Summary
+    const summary = document.createElement('div');
+    summary.className = 'reading-summary';
+    summary.innerHTML = `<h3>✦ The Big Picture</h3><p>${chart.summary}</p>`;
+    el.appendChild(summary);
+
+    // Birth details footer
+    const details = document.createElement('div');
+    details.style.cssText = 'text-align:center;margin-top:24px;color:var(--muted);font-size:0.8rem;font-style:italic;';
+    details.textContent = `${dateFormatted}${time ? ' · ' + time : ''} · ${place}`;
+    el.appendChild(details);
+
+    document.getElementById('readingWrap').classList.add('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
